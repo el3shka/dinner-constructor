@@ -1,5 +1,6 @@
 package ru.practicum.dinner;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main {
@@ -37,29 +38,41 @@ public class Main {
 
     private static void addNewDish() {
         System.out.println("Введите тип блюда:");
-        String dishType = scanner.nextLine();
+        String dishType = scanner.nextLine().trim().toUpperCase();
         System.out.println("Введите название блюда:");
-        String dishName = scanner.nextLine();
-
-        // добавьте новое блюдо
+        String dishName = scanner.nextLine().trim();
+        dc.storeDishes(dishType, dishName);
     }
 
     private static void generateDishCombo() {
         System.out.println("Начинаем конструировать обед...");
 
         System.out.println("Введите количество наборов, которые нужно сгенерировать:");
-        int numberOfCombos = scanner.nextInt();
+        int countOfCombos = scanner.nextInt();
         scanner.nextLine();
+        if (countOfCombos != 0) {
 
-        System.out.println("Вводите типы блюда, разделяя символом переноса строки (enter). Для завершения ввода введите пустую строку");
-        String nextItem = scanner.nextLine();
+            System.out.println("Вводите типы блюда, разделяя символом переноса строки (enter). Для завершения ввода введите пустую строку");
+            // закапсим категорию
+            String nextItem = scanner.nextLine().trim().toUpperCase();
+            ArrayList<String> ArrayDishTypes = new ArrayList<>();
 
-        //реализуйте ввод типов блюд
-        while (!nextItem.isEmpty()) {
-
+            // проверяем на наличие типа, выполняем пока не придет пустая строчка
+            while (!nextItem.isEmpty()) {
+                // обращение с проверкой наличия в хэш-мапе
+                boolean typeExist = dc.typeChecks(nextItem);
+                // если есть тип - добавляется в массив и работаем дальше
+                if (typeExist) {
+                    ArrayDishTypes.add(nextItem);
+                    nextItem = scanner.nextLine().trim().toUpperCase();
+                } else {
+                    System.out.println("Такого типа блюда не существует");
+                    break;
+                }
+            }
+            dc.comboGenerator(countOfCombos, ArrayDishTypes);
+        } else {
+            System.out.println("Недопустимое значение!");
         }
-
-        // сгенерируйте комбинации блюд и выведите на экран
-
     }
 }
